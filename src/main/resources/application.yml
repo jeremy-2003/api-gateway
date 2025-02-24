@@ -19,16 +19,31 @@ spring:
         - id: transaction-service
           uri: lb://TRANSACTION-SERVICE
           predicates:
-            - Path=/api/transaction/**
+            - Path=/api/transactions/**
         - id: account-service
           uri: lb://ACCOUNT-SERVICE
           predicates:
             - Path=/api/accounts/**
-        - id: credit-service
+        - id: credit-service-route
+          uri: lb://CREDIT-SERVICE
+          predicates:
+            - Path=/api/credits/**
+          filters:
+            - PreserveHostHeader
+            - name: RewritePath
+              args:
+                regexp: /api/credits/(?<remaining>.*)
+                replacement: /api/credits/${remaining}
+        - id: credit-cards-route
           uri: lb://CREDIT-SERVICE
           predicates:
             - Path=/api/credit-cards/**
-            - Path=/api/credits/**
+          filters:
+            - PreserveHostHeader
+            - name: RewritePath
+              args:
+                regexp: /api/credit-cards/(?<remaining>.*)
+                replacement: /api/credit-cards/${remaining}
         - id: report-service
           uri: lb://REPORT-SERVICE
           predicates:
@@ -51,3 +66,11 @@ eureka:
     register-with-eureka: true
   instance:
     prefer-ip-address: true
+    instance-id: ${spring.application.name}:${random.uuid}
+logging:
+  level:
+    org.springframework.cloud.gateway: DEBUG
+    org.springframework.http.server.reactive: DEBUG
+    org.springframework.web.reactive: DEBUG
+    reactor.netty: DEBUG
+    reactor.netty.http.client: DEBUG
