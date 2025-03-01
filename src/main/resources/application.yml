@@ -24,6 +24,22 @@ spring:
           uri: lb://ACCOUNT-SERVICE
           predicates:
             - Path=/api/accounts/**
+          filters:
+            - PreserveHostHeader
+            - name: RewritePath
+              args:
+                regexp: /api/accounts/(?<remaining>.*)
+                replacement: /api/accounts/${remaining}
+        - id: debit-card-service
+          uri: lb://ACCOUNT-SERVICE
+          predicates:
+            - Path=/api/debit-cards/**
+          filters:
+            - PreserveHostHeader
+            - name: RewritePath
+              args:
+                regexp: /api/debit-cards/(?<remaining>.*)
+                replacement: /api/debit-cards/${remaining}
         - id: credit-service-route
           uri: lb://CREDIT-SERVICE
           predicates:
@@ -44,6 +60,16 @@ spring:
               args:
                 regexp: /api/credit-cards/(?<remaining>.*)
                 replacement: /api/credit-cards/${remaining}
+        - id: credit-customer-eligibility
+          uri: lb://CREDIT-SERVICE
+          predicates:
+            - Path=/api/customer-eligibility/**
+          filters:
+            - PreserveHostHeader
+            - name: RewritePath
+              args:
+                regexp: /api/customer-eligibility/(?<remaining>.*)
+                replacement: /api/customer-eligibility/${remaining}
         - id: report-service
           uri: lb://REPORT-SERVICE
           predicates:
