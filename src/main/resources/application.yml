@@ -87,7 +87,7 @@ management:
 eureka:
   client:
     service-url:
-      defaultZone: http://localhost:8761/eureka/
+      defaultZone: http://eureka-server-cxgjf0gxbhbsfccz.canadacentral-01.azurewebsites.net/eureka
     fetch-registry: true
     register-with-eureka: true
   instance:
