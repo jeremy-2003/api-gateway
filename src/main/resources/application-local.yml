@@ -1,0 +1,102 @@
+server:
+  port: 8080
+spring:
+  application:
+    name: api-gateway
+  cloud:
+    gateway:
+      discovery:
+        locator:
+          enabled: true
+          lower-case-service-id: true
+      routes:
+        - id: customer-service
+          uri: lb://CUSTOMER-SERVICE
+          predicates:
+            - Path=/api/customers/**
+          filters:
+            - StripPrefix=0
+        - id: transaction-service
+          uri: lb://TRANSACTION-SERVICE
+          predicates:
+            - Path=/api/transactions/**
+        - id: account-service
+          uri: lb://ACCOUNT-SERVICE
+          predicates:
+            - Path=/api/accounts/**
+          filters:
+            - PreserveHostHeader
+            - name: RewritePath
+              args:
+                regexp: /api/accounts/(?<remaining>.*)
+                replacement: /api/accounts/${remaining}
+        - id: debit-card-service
+          uri: lb://ACCOUNT-SERVICE
+          predicates:
+            - Path=/api/debit-cards/**
+          filters:
+            - PreserveHostHeader
+            - name: RewritePath
+              args:
+                regexp: /api/debit-cards/(?<remaining>.*)
+                replacement: /api/debit-cards/${remaining}
+        - id: credit-service-route
+          uri: lb://CREDIT-SERVICE
+          predicates:
+            - Path=/api/credits/**
+          filters:
+            - PreserveHostHeader
+            - name: RewritePath
+              args:
+                regexp: /api/credits/(?<remaining>.*)
+                replacement: /api/credits/${remaining}
+        - id: credit-cards-route
+          uri: lb://CREDIT-SERVICE
+          predicates:
+            - Path=/api/credit-cards/**
+          filters:
+            - PreserveHostHeader
+            - name: RewritePath
+              args:
+                regexp: /api/credit-cards/(?<remaining>.*)
+                replacement: /api/credit-cards/${remaining}
+        - id: credit-customer-eligibility
+          uri: lb://CREDIT-SERVICE
+          predicates:
+            - Path=/api/customer-eligibility/**
+          filters:
+            - PreserveHostHeader
+            - name: RewritePath
+              args:
+                regexp: /api/customer-eligibility/(?<remaining>.*)
+                replacement: /api/customer-eligibility/${remaining}
+        - id: report-service
+          uri: lb://REPORT-SERVICE
+          predicates:
+            - Path=/api/reports/**
+management:
+  endpoints:
+    web:
+      exposure:
+        include: "*"
+  endpoint:
+    gateway:
+      enabled: true
+    health:
+      show-details: always
+eureka:
+  client:
+    service-url:
+      defaultZone: http://localhost:8761/eureka/
+    fetch-registry: true
+    register-with-eureka: true
+  instance:
+    prefer-ip-address: true
+    instance-id: ${spring.application.name}:${random.uuid}
+logging:
+  level:
+    org.springframework.cloud.gateway: DEBUG
+    org.springframework.http.server.reactive: DEBUG
+    org.springframework.web.reactive: DEBUG
+    reactor.netty: DEBUG
+    reactor.netty.http.client: DEBUG
