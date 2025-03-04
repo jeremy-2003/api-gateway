@@ -25,51 +25,31 @@ spring:
           predicates:
             - Path=/api/accounts/**
           filters:
-            - PreserveHostHeader
-            - name: RewritePath
-              args:
-                regexp: /api/accounts/(?<remaining>.*)
-                replacement: /api/accounts/${remaining}
+            - AddRequestHeader=Content-Type, application/json
         - id: debit-card-service
           uri: lb://ACCOUNT-SERVICE
           predicates:
             - Path=/api/debit-cards/**
           filters:
-            - PreserveHostHeader
-            - name: RewritePath
-              args:
-                regexp: /api/debit-cards/(?<remaining>.*)
-                replacement: /api/debit-cards/${remaining}
+            - AddRequestHeader=Content-Type, application/json
         - id: credit-service-route
           uri: lb://CREDIT-SERVICE
           predicates:
             - Path=/api/credits/**
           filters:
-            - PreserveHostHeader
-            - name: RewritePath
-              args:
-                regexp: /api/credits/(?<remaining>.*)
-                replacement: /api/credits/${remaining}
+            - AddRequestHeader=Content-Type, application/json
         - id: credit-cards-route
           uri: lb://CREDIT-SERVICE
           predicates:
             - Path=/api/credit-cards/**
           filters:
-            - PreserveHostHeader
-            - name: RewritePath
-              args:
-                regexp: /api/credit-cards/(?<remaining>.*)
-                replacement: /api/credit-cards/${remaining}
+            - AddRequestHeader=Content-Type, application/json
         - id: credit-customer-eligibility
           uri: lb://CREDIT-SERVICE
           predicates:
             - Path=/api/customer-eligibility/**
           filters:
-            - PreserveHostHeader
-            - name: RewritePath
-              args:
-                regexp: /api/customer-eligibility/(?<remaining>.*)
-                replacement: /api/customer-eligibility/${remaining}
+            - AddRequestHeader=Content-Type, application/json
         - id: report-service
           uri: lb://REPORT-SERVICE
           predicates:
