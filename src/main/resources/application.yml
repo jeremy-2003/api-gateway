@@ -54,6 +54,10 @@ spring:
           uri: lb://REPORT-SERVICE
           predicates:
             - Path=/api/reports/**
+        - id: yanki-service
+          uri: lb://YANKI-SERVICE
+          predicates:
+            - Path=/api/yanki/**
 management:
   endpoints:
     web:
