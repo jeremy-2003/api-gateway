@@ -58,6 +58,46 @@ spring:
           uri: lb://YANKI-SERVICE
           predicates:
             - Path=/api/yanki/**
+        - id: bootcoin-service-user
+          uri: lb://BOOTCOIN-SERVICE
+          predicates:
+            - Path=/api/bootcoin/user/**
+          filters:
+            - PreserveHostHeader
+            - name: RewritePath
+              args:
+                regexp: /api/bootcoin/user/(?<remaining>.*)
+                replacement: /api/bootcoin/user/${remaining}
+        - id: bootcoin-service-purchase
+          uri: lb://BOOTCOIN-SERVICE
+          predicates:
+            - Path=/api/bootcoin/purchases/**
+          filters:
+            - PreserveHostHeader
+            - name: RewritePath
+              args:
+                regexp: /api/bootcoin/purchases/(?<remaining>.*)
+                replacement: /api/bootcoin/purchases/${remaining}
+        - id: bootcoin-service-exchange
+          uri: lb://BOOTCOIN-SERVICE
+          predicates:
+            - Path=/api/bootcoin/exchange-rate/**
+          filters:
+            - PreserveHostHeader
+            - name: RewritePath
+              args:
+                regexp: /api/bootcoin/exchange-rate/(?<remaining>.*)
+                replacement: /api/bootcoin/exchange-rate/${remaining}
+        - id: bootcoin-service-bank
+          uri: lb://BOOTCOIN-SERVICE
+          predicates:
+            - Path=/api/bootcoin/transaction-bank/**
+          filters:
+            - PreserveHostHeader
+            - name: RewritePath
+              args:
+                regexp: /api/bootcoin/transaction-bank/(?<remaining>.*)
+                replacement: /api/bootcoin/transaction-bank/${remaining}
 management:
   endpoints:
     web:
